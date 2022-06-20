@@ -7,7 +7,7 @@ for the manuscript
 'Mathematical Models for Biomarker Calculation of Drug-Induced Liver Injury in Humans and Experi-mental 
 Models Based on Gadoxetate Enhanced Magnetic Resonance Imaging'
 
-Markus Karlsson, Christian Simonsson Nils Dahlström, Gunnar Cedersund PhD, Peter Lundberg 
+Markus Karlsson, Christian Simonsson Nils Dahlström, Gunnar Cedersund, Peter Lundberg 
 
 -- Setup --
 The systems biology toolbox (http://www.sbtoolbox2.org/main.php) is necessary to run the scripts in this project.
@@ -21,4 +21,5 @@ Code used for parameter estimation and analysis is aviable upon request.
 
 -- For questions --
 Contact: peter.lundberg@liu.se 
+         gunnar.cedersund@liu.se
          christian.simonsson@liu.se
