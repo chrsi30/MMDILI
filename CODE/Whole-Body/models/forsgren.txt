@@ -1,0 +1,83 @@
+********** MODEL NAME 
+forsgren4
+
+********** MODEL NOTES
+Model implemented for SBtoolbox v2.1 with the SBPD extension package
+www.sbtoolbox2.org
+Time unit is seconds
+Volume units is Liters
+Concentration unit is mol/Liter
+Using both deltaR1 and Conc as outputs
+Using constants given Forsgren et al. 2014
+
+********** MODEL STATES 
+d/dt(Ch)     = v3-v2+(-v1)/(Vl*Fh)  
+d/dt(Cp)     = ((-v3+v2)*Vl*Fh-v4+(v6-v5)*Vees+v8)/(Vb*(1-Hct)) 
+d/dt(Ce)     = v5-v6 
+d/dt(Ceob)   = 0
+
+d/dt(Ndose)  = v8
+d/dt(Nbile)  = v1
+d/dt(Nurine) = v4
+
+Cp(0)	  = 0
+Ch(0)	  = 0 
+Ce(0)	  = 0 
+Ceob(0)   = 0.25
+Ndose(0)  = 0
+Nbile(0)  = 0
+Nurine(0) = 0
+
+********** MODEL PARAMETERS 
+kef   = 3.8e-4                 % Hep -> Bile [1/s]
+kdiff = 1.7e-3                 % EES/blood plasma diffusion [1/s]
+ki    = 4.7e-3                 % Plasma -> Hepatocyte [1/s]
+kback = 2.8e-4                 % Hepatocyte -> Plasma [1/s]
+
+********** MODEL VARIABLES   
+Bw = 70                         % Body weigth
+
+Fb    = 0.12                    % Fraction of blood in liver volume
+Flees = 0.20                    % EES fraction in liver volume.
+Fh    = 1-(Fb+Flees)            % Fraction of heaptocyte in liver volume 
+Fs    = 0.35                    % Fraction of spleen volume with blood
+Fsees = 0.2                     % EES fraction in spleen volume 
+
+Alb  = 0.9                      % Fraction of Cp not bound to albumin 
+Vl   = 1.43                     % Liver volume
+Vb   = 4.51                     % Blood volume 
+Vees = 14.77                    % Extracellular total water volume 
+Hct  = 0.43                     % Hematocrit (amount of red bloodcells in plasma) 
+
+Rw  = 4.7e3                     % Relaxivity, water
+Rbl = 7.3e3                     % Relaxivity, blood
+Rbi = 5.4e3                     % Relaxivity, bile
+Rl  = 10.7e3                    % Relaxivity, liver
+Rpl = 6.9e3                     % Relaxivity, plasma
+
+Ksyr = 1e-3                     % Injectionrate [1/s]    
+CLr  = 0.001845                 % Renal clearence [1/s]
+dose = 25e-6*Bw                 % 25 umol/kg
+
+********** MODEL REACTIONS 
+v1 = kef*Ch*Vl*Fh                                              	% Hep -> Bile ducts  
+v2 = kback*Ch                                                 	% Hep -> Plasma 
+v3 = ki*Cp*Alb                                              	% Plasma -> Hep 
+v4 = CLr*Cp*Alb                                             	% Plasma -> Urinar bladder 
+v5 = kdiff*Cp*Alb                                               % Plasma -> EES 
+v6 = kdiff*Ce                                               	% EES -> Plasma 
+v8 = Ceob*Ksyr                                                  % Input function
+
+dR1l = Ch*Fh*Rl+Cp*Fb*(1-Hct)*Rbl+Ce*Flees*Rpl                  % Estimated delta R in the liver. 
+dR1s = Cp*Fs*(1-Hct)*Rbl+Ce*Fsees*Rpl                           % Estimated delta R in the spleen. 
+dR1b = Cp*(1-Hct)*Rbl                                           % Estimated delta R in the blood vessels.
+Cl   = Ch*Fh+Cp*Fb*(1-Hct)+Ce*Flees                             % Estimated Conc in the liver. 
+Cs   = Cp*Fs*(1-Hct)+Ce*Fsees                                   % Estimated Conc in the spleen. 
+
+********** MODEL FUNCTIONS 
+
+********** MODEL EVENTS 
+Syringe_done = ge(Ndose, dose),Ceob,0                         % Stops the injection
+
+********** MODEL MATLAB FUNCTIONS 
+
